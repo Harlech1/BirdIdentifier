@@ -6,12 +6,16 @@
 //
 
 import SwiftUI
+import TPackage
 
 @main
 struct BirdIdentifierApp: App {
+    init() {
+        TPackage.configure(withAPIKey: "appl_VPaGiXzlKHXmvZUClhWCvSAWYGT", entitlementIdentifier: "Premium")
+    }
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            CustomPaywallView()
         }
     }
 }
