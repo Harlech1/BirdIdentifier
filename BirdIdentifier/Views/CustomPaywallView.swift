@@ -4,6 +4,8 @@ import RevenueCatUI
 import SafariServices
 
 struct CustomPaywallView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var showDismissButton = false
     @State private var isTrialEnabled = true
     @State private var currentOffering: String = "Trial"
     @State private var packages: [Package] = []
@@ -12,108 +14,160 @@ struct CustomPaywallView: View {
     @State private var showingTerms = false
     
     var body: some View {
-        VStack(spacing: 20) {
-            Spacer()
-            
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Enable Free Trial")
-                        .font(.headline)
-                    Text("Not sure yet? Try first.")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+        ZStack(alignment: .topTrailing) {
+            VStack(spacing: 20) {
+                VStack(spacing: 16) {
+                    Text("Unlock Premium Features")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    
+                    VStack(alignment: .leading, spacing: 12) {
+                        FeatureRow(icon: "camera.viewfinder",
+                                 title: "Instant Recognition", 
+                                 description: "Identify birds in under 2 seconds")
+                        
+                        FeatureRow(icon: "book.closed.fill", 
+                                 title: "Bird Encyclopedia", 
+                                 description: "Details of 1000+ bird species")
+                        
+                        FeatureRow(icon: "map.fill", 
+                                 title: "Location History", 
+                                 description: "Remember where you spot birds")
+                    }
                 }
+                .padding(.vertical, 16)
+                .padding(.horizontal)
                 
                 Spacer()
                 
-                Toggle("", isOn: $isTrialEnabled)
-                    .labelsHidden()
-                    .onChange(of: isTrialEnabled) { newValue in
-                        currentOffering = newValue ? "Trial" : "Premium"
-                        loadPackages()
-                        selectedPackage = nil
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Enable Free Trial")
+                            .font(.headline)
+                        Text("Not sure yet? Try first.")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
                     }
-                    .tint(.blue)
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
-            .background(Color(.systemBackground))
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(isTrialEnabled ? Color.blue : Color(.systemGray5), lineWidth: isTrialEnabled ? 5 : 5)
-            )
-            .cornerRadius(12)
-            .padding(.horizontal)
-            
-            VStack(spacing: 16) {
-                ForEach(packages, id: \.identifier) { package in
-                    PurchaseButton(package: package, 
-                                 isSelected: selectedPackage?.identifier == package.identifier,
-                                 isTrialEnabled: isTrialEnabled) {
-                        selectedPackage = package
-                    }
+                    
+                    Spacer()
+                    
+                    Toggle("", isOn: $isTrialEnabled)
+                        .labelsHidden()
+                        .onChange(of: isTrialEnabled) { newValue in
+                            currentOffering = newValue ? "Trial" : "Premium"
+                            loadPackages()
+                        }
+                        .tint(.blue)
                 }
-            }
-            .padding(.horizontal)
-            
-            Button(action: {
-                if let package = selectedPackage {
-                    Task {
-                        do {
-                            let result = try await Purchases.shared.purchase(package: package)
-                            print("Purchase completed: \(result.customerInfo.entitlements)")
-                        } catch {
-                            print("Purchase failed: \(error)")
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
+                .background(Color(.systemBackground))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(isTrialEnabled ? Color.blue : Color(.systemGray5), lineWidth: isTrialEnabled ? 5 : 5)
+                )
+                .cornerRadius(12)
+                .padding(.horizontal)
+                
+                VStack(spacing: 16) {
+                    ForEach(packages, id: \.identifier) { package in
+                        PurchaseButton(package: package, 
+                                     isSelected: selectedPackage?.identifier == package.identifier,
+                                     isTrialEnabled: isTrialEnabled) {
+                            selectedPackage = package
                         }
                     }
                 }
-            }) {
-                Text(isTrialEnabled ? "START MY FREE 3 DAYS" : "CONTINUE")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(selectedPackage != nil ? Color.blue : Color.gray)
-                    .cornerRadius(12)
-            }
-            .disabled(selectedPackage == nil)
-            .padding(.horizontal)
+                .padding(.horizontal)
+                
+                Button(action: {
+                    if let package = selectedPackage {
+                        Task {
+                            do {
+                                let result = try await Purchases.shared.purchase(package: package)
+                                print("Purchase completed: \(result.customerInfo.entitlements)")
+                            } catch {
+                                print("Purchase failed: \(error)")
+                            }
+                        }
+                    }
+                }) {
+                    Text(isTrialEnabled ? "START MY FREE 3 DAYS" : "CONTINUE")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(selectedPackage != nil ? Color.blue : Color.gray)
+                        .cornerRadius(12)
+                }
+                .disabled(selectedPackage == nil)
+                .padding(.horizontal)
 
-            HStack(spacing: 4) {
-                Button("Restore") {
-                    Task {
-                        do {
-                            let customerInfo = try await Purchases.shared.restorePurchases()
-                            print("Purchases restored: \(customerInfo)")
-                        } catch {
-                            print("Restore failed: \(error)")
+                HStack(spacing: 4) {
+                    Button("Restore") {
+                        Task {
+                            do {
+                                let customerInfo = try await Purchases.shared.restorePurchases()
+                                print("Purchases restored: \(customerInfo)")
+                            } catch {
+                                print("Restore failed: \(error)")
+                            }
                         }
                     }
-                }
-                .font(.caption)
-                .foregroundColor(.secondary)
-                
-                Text("•")
+                    .font(.caption)
                     .foregroundColor(.secondary)
-                
-                Button("Privacy") {
-                    showingPrivacy = true
-                }
-                .font(.caption)
-                .foregroundColor(.secondary)
-                
-                Text("•")
+                    
+                    Text("•")
+                        .foregroundColor(.secondary)
+                    
+                    Button("Privacy") {
+                        showingPrivacy = true
+                    }
+                    .font(.caption)
                     .foregroundColor(.secondary)
-                
-                Button("Terms") {
-                    showingTerms = true
+                    
+                    Text("•")
+                        .foregroundColor(.secondary)
+                    
+                    Button("Terms") {
+                        showingTerms = true
+                    }
+                    .font(.caption)
+                    .foregroundColor(.secondary)
                 }
-                .font(.caption)
-                .foregroundColor(.secondary)
+            }
+            
+            if showDismissButton {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title2)
+                        .foregroundColor(.secondary)
+                }
+                .padding()
+                .opacity(showDismissButton ? 1 : 0)
+                .animation(.easeIn, value: showDismissButton)
             }
         }
+        .background(
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    Color.blue.opacity(0.1),
+                    Color.blue.opacity(0.05)
+                ]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
+        )
         .onAppear {
             loadPackages()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                withAnimation {
+                    showDismissButton = true
+                }
+            }
         }
         .sheet(isPresented: $showingPrivacy) {
             SafariView(url: URL(string: "https://turkerkizilcik.com/birdid/privacy-policy.html")!)
@@ -131,13 +185,19 @@ struct CustomPaywallView: View {
                 
                 DispatchQueue.main.async {
                     if let offering = offering {
+                        let currentPeriodUnit = selectedPackage?.storeProduct.subscriptionPeriod?.unit
+                        
                         self.packages = offering.availablePackages.sorted { first, second in
                             let firstIsWeekly = first.storeProduct.subscriptionPeriod?.unit == .week
                             let secondIsWeekly = second.storeProduct.subscriptionPeriod?.unit == .week
                             return firstIsWeekly && !secondIsWeekly
                         }
                         
-                        if selectedPackage == nil {
+                        if let currentPeriodUnit = currentPeriodUnit {
+                            selectedPackage = packages.first { package in
+                                package.storeProduct.subscriptionPeriod?.unit == currentPeriodUnit
+                            }
+                        } else {
                             selectedPackage = packages.first { package in
                                 if let period = package.storeProduct.subscriptionPeriod {
                                     return period.unit == .week && period.value == 1
@@ -162,6 +222,10 @@ struct PurchaseButton: View {
     let isTrialEnabled: Bool
     let action: () -> Void
     
+    private var priceText: String {
+        "\(package.storeProduct.localizedPriceString)/\(package.storeProduct.subscriptionPeriod?.unit.shortTitle ?? "")"
+    }
+    
     var body: some View {
         ZStack(alignment: .topTrailing) {
             Button(action: action) {
@@ -172,11 +236,11 @@ struct PurchaseButton: View {
                             .foregroundColor(.primary)
                         
                         if isTrialEnabled {
-                            Text("Free for 3 days, then \(package.storeProduct.localizedPriceString)/\(package.storeProduct.subscriptionPeriod?.unit.shortTitle ?? "")")
+                            Text("Free for 3 days, then \(priceText)")
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                         } else {
-                            Text(package.storeProduct.localizedPriceString)
+                            Text(priceText)
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                         }
@@ -231,6 +295,32 @@ struct SafariView: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: SFSafariViewController, context: UIViewControllerRepresentableContext<SafariView>) {
+    }
+}
+
+struct FeatureRow: View {
+    let icon: String
+    let title: String
+    let description: String
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundColor(.blue)
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.headline)
+                
+                Text(description)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+            
+            Spacer()
+        }
+        .padding(.vertical, 8)
     }
 }
 

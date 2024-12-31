@@ -7,16 +7,31 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D1935BA82D242F40005F7403 /* BirdModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D1935BA62D242F40005F7403 /* BirdModel.xcdatamodeld */; };
 		D1BACC9F2D22EBC00098EEB9 /* TPackage in Frameworks */ = {isa = PBXBuildFile; productRef = D1BACC9E2D22EBC00098EEB9 /* TPackage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D1935BA72D242F40005F7403 /* BirdModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BirdModel.xcdatamodel; sourceTree = "<group>"; };
 		D1BACC862D22C7E10098EEB9 /* BirdIdentifier.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BirdIdentifier.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		D1935B9F2D242ECF005F7403 /* Exceptions for "BirdIdentifier" folder in "BirdIdentifier" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = D1BACC852D22C7E10098EEB9 /* BirdIdentifier */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		D1BACC882D22C7E10098EEB9 /* BirdIdentifier */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D1935B9F2D242ECF005F7403 /* Exceptions for "BirdIdentifier" folder in "BirdIdentifier" target */,
+			);
 			path = BirdIdentifier;
 			sourceTree = "<group>";
 		};
@@ -37,6 +52,7 @@
 		D1BACC7D2D22C7E10098EEB9 = {
 			isa = PBXGroup;
 			children = (
+				D1935BA62D242F40005F7403 /* BirdModel.xcdatamodeld */,
 				D1BACC882D22C7E10098EEB9 /* BirdIdentifier */,
 				D1BACC872D22C7E10098EEB9 /* Products */,
 			);
@@ -128,6 +144,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D1935BA82D242F40005F7403 /* BirdModel.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -264,6 +281,7 @@
 				DEVELOPMENT_TEAM = 8NLR5UAY6K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BirdIdentifier/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Birdi;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -295,6 +313,7 @@
 				DEVELOPMENT_TEAM = 8NLR5UAY6K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BirdIdentifier/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Birdi;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -356,6 +375,19 @@
 			productName = TPackage;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		D1935BA62D242F40005F7403 /* BirdModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				D1935BA72D242F40005F7403 /* BirdModel.xcdatamodel */,
+			);
+			currentVersion = D1935BA72D242F40005F7403 /* BirdModel.xcdatamodel */;
+			path = BirdModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = D1BACC7E2D22C7E10098EEB9 /* Project object */;
 }
