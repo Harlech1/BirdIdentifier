@@ -23,6 +23,11 @@ struct AddBirdView: View {
     @State private var symbolism = ""
     @State private var story = ""
     @State private var nativeRegion = ""
+    @State private var colorPatterns = ""
+    @State private var size = ""
+    @State private var distinctiveFeatures = ""
+    @State private var conservationStatus = ""
+    @State private var behavior = ""
     @StateObject private var locationManager = LocationManager()
     @State private var currentLocationName: String = ""
     @State private var identificationFailed = false
@@ -38,11 +43,20 @@ struct AddBirdView: View {
         newBird.symbolism = symbolism
         newBird.story = story
         newBird.nativeRegion = nativeRegion
+        newBird.colorPatterns = colorPatterns
+        newBird.size = size
+        newBird.distinctiveFeatures = distinctiveFeatures
+        newBird.conservationStatus = conservationStatus
+        newBird.behavior = behavior
 
         if let coordinate = selectedCoordinate {
             newBird.latitude = coordinate.latitude
             newBird.longitude = coordinate.longitude
             newBird.locationName = locationName
+        } else if let currentLocation = locationManager.location {
+            newBird.latitude = currentLocation.coordinate.latitude
+            newBird.longitude = currentLocation.coordinate.longitude
+            newBird.locationName = currentLocationName.isEmpty ? "Unknown Location" : currentLocationName
         }
 
         do {
@@ -196,8 +210,73 @@ struct AddBirdView: View {
                                     }
                                 }
                             }
+                            
+                            if !colorPatterns.isEmpty {
+                                Section(header: HStack {
+                                    Image(systemName: "paintpalette.fill")
+                                        .symbolRenderingMode(.hierarchical)
+                                    Text("Color Patterns")
+                                }) {
+                                    Text(colorPatterns)
+                                        .padding(4)
+                                        .blur(radius: premiumManager.isPremium ? 0 : 5)
+                                }
+                            }
+
+                            if !size.isEmpty {
+                                Section(header: HStack {
+                                    Image(systemName: "ruler.fill")
+                                        .symbolRenderingMode(.hierarchical)
+                                    Text("Size")
+                                }) {
+                                    Text(size)
+                                        .padding(4)
+                                }
+                            }
+
+                            if !distinctiveFeatures.isEmpty {
+                                Section(header: HStack {
+                                    Image(systemName: "sparkles.rectangle.stack.fill")
+                                        .symbolRenderingMode(.hierarchical)
+                                    Text("Distinctive Features")
+                                }) {
+                                    Text(distinctiveFeatures)
+                                        .padding(4)
+                                        .blur(radius: premiumManager.isPremium ? 0 : 5)
+
+                                }
+                            }
+
+                            if !behavior.isEmpty {
+                                Section(header: HStack {
+                                    Image(systemName: "figure.walk")
+                                        .symbolRenderingMode(.hierarchical)
+                                    Text("Behavior")
+                                }) {
+                                    Text(behavior)
+                                        .padding(4)
+                                        .blur(radius: premiumManager.isPremium ? 0 : 5)
+
+                                }
+                            }
+
+                            if !conservationStatus.isEmpty {
+                                Section(header: HStack {
+                                    Image(systemName: "leaf.fill")
+                                        .symbolRenderingMode(.hierarchical)
+                                    Text("Conservation Status")
+                                }) {
+                                    Text(conservationStatus)
+                                        .padding(4)
+                                }
+                            }
+
                             if !story.isEmpty && story.lowercased() != "none" {
-                                Section(header: Text("Story & Mythology")) {
+                                Section(header: HStack {
+                                    Image(systemName: "book.pages")
+                                        .symbolRenderingMode(.hierarchical)
+                                    Text("Story & Mythology")
+                                }) {
                                     Text(story)
                                         .padding(4)
                                         .blur(radius: premiumManager.isPremium ? 0 : 3)
@@ -263,7 +342,14 @@ struct AddBirdView: View {
         let endpoint = "https://api.turkerkizilcik.com/chat/index.php"
 
         let base64Image = imageData.base64EncodedString()
-        let locationContext = currentLocationName.isEmpty ? "" : "Note that this picture was taken in \(currentLocationName). Use this information to help with identification, but do not include the location in your response."
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .long
+        dateFormatter.timeStyle = .short
+        let currentDateTime = dateFormatter.string(from: Date())
+        
+        let locationAndTimeContext = currentLocationName.isEmpty ? 
+            "Note that this picture was taken on \(currentDateTime)." :
+            "Note that this picture was taken in \(currentLocationName) on \(currentDateTime). Use this information to help with identification, but do not include the location in your response."
         
         let payload: [String: Any] = [
             "model": "gpt-4o",
@@ -276,11 +362,16 @@ struct AddBirdView: View {
                         [
                             "type": "text",
                             "text": """
-                            \(locationContext)
+                            \(locationAndTimeContext)
                             Identify this bird and provide ONLY the following information in this exact format:
                             common_name: NAME
                             scientific_name: FULL NAME (Genus and species, e.g., Corvus corax; include both parts)
                             native_region: REGIONS (e.g., Mediterranean Basin, Eastern Asia, North America)
+                            color_patterns: DESCRIBE THE MAIN COLORS AND PATTERNS OF THE BIRD'S PLUMAGE
+                            size: PROVIDE LENGTH, WINGSPAN, AND APPROXIMATE WEIGHT IF KNOWN
+                            distinctive_features: LIST KEY IDENTIFYING FEATURES (e.g., curved beak, long tail, distinctive crest)
+                            behavior: DESCRIBE TYPICAL BEHAVIOR AND HABITS (e.g., foraging patterns, social behavior, nesting habits)
+                            conservation_status: CURRENT CONSERVATION STATUS (e.g., Least Concern, Near Threatened, Vulnerable, Endangered, Critically Endangered)
                             symbolism: TWO OR THREE WORDS MAX (e.g., peace, love, resilience)
                             story: A BRIEF INTERESTING STORY OR MYTH ABOUT THIS BIRD, TWO PARAGRAPHS IS ENOUGH (if none, write NONE)
                             Ensure that only "symbolism" is limited to two or three words, and "story" can be a full sentence or more. For native_region, list the main geographical regions where this bird naturally occurs. Do not include any additional text.
@@ -295,7 +386,7 @@ struct AddBirdView: View {
                     ]
                 ]
             ],
-            "max_tokens": 300
+            "max_tokens": 500
         ]
 
         guard let jsonData = try? JSONSerialization.data(withJSONObject: payload) else {
@@ -331,6 +422,16 @@ struct AddBirdView: View {
                             scientificName = line.replacingOccurrences(of: "scientific_name:", with: "").trimmingCharacters(in: .whitespaces)
                         } else if line.lowercased().starts(with: "native_region:") {
                             nativeRegion = line.replacingOccurrences(of: "native_region:", with: "").trimmingCharacters(in: .whitespaces)
+                        } else if line.lowercased().starts(with: "color_patterns:") {
+                            colorPatterns = line.replacingOccurrences(of: "color_patterns:", with: "").trimmingCharacters(in: .whitespaces)
+                        } else if line.lowercased().starts(with: "size:") {
+                            size = line.replacingOccurrences(of: "size:", with: "").trimmingCharacters(in: .whitespaces)
+                        } else if line.lowercased().starts(with: "distinctive_features:") {
+                            distinctiveFeatures = line.replacingOccurrences(of: "distinctive_features:", with: "").trimmingCharacters(in: .whitespaces)
+                        } else if line.lowercased().starts(with: "behavior:") {
+                            behavior = line.replacingOccurrences(of: "behavior:", with: "").trimmingCharacters(in: .whitespaces)
+                        } else if line.lowercased().starts(with: "conservation_status:") {
+                            conservationStatus = line.replacingOccurrences(of: "conservation_status:", with: "").trimmingCharacters(in: .whitespaces)
                         } else if line.lowercased().starts(with: "symbolism:") {
                             symbolism = line.replacingOccurrences(of: "symbolism:", with: "").trimmingCharacters(in: .whitespaces)
                         } else if line.lowercased().starts(with: "story:") {

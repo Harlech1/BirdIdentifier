@@ -25,9 +25,9 @@ struct OnboardingView: View {
             color: .pink
         ),
         OnboardingPage(
-            title: "Care Reminders",
-            description: "Get notified when it's time to water your birds.", /// FIX HERE
-            imageName: "bell.fill",
+            title: "Learn Their Stories",
+            description: "Discover fascinating tales, cultural significance, and interesting facts about each bird.",
+            imageName: "book.pages",
             color: .purple
         ),
         OnboardingPage(

@@ -27,7 +27,7 @@ struct SpecialOfferView: View {
     func calculateDiscount(offerings: Offerings?) {
         guard
             let regularPackage = offerings?.offering(identifier: "Premium")?.availablePackages.first(where: { $0.identifier == "$rc_annual" }),
-            let salePackage = offerings?.offering(identifier: "Trial")?.availablePackages.first(where: { $0.identifier == "$rc_annual" })
+            let salePackage = offerings?.offering(identifier: "Sales")?.availablePackages.first(where: { $0.identifier == "$rc_annual" })
         else {
             print("Couldn't find packages for comparison")
             return
@@ -97,33 +97,21 @@ struct SpecialOfferView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
 
                             FeatureRowSpecialOffer(
-                                icon: "bird.fill",
-                                title: "Identify Any Plant Instantly", /// FIX HERE
-                                subtitle: "Unlimited plant identifications at your fingertips"
+                                icon: "sparkles.rectangle.stack",
+                                title: "AI Bird Scanner",
+                                subtitle: "Identify any bird instantly with our advanced AI"
                             )
                             
-                            FeatureRowSpecialOffer( /// FIX HERE
+                            FeatureRowSpecialOffer(
                                 icon: "book.fill",
-                                title: "Discover Plant Stories",
-                                subtitle: "Learn ancient myths and cultural significance"
+                                title: "Bird Stories",
+                                subtitle: "Learn about their habitats and behaviors"
                             )
                             
                             FeatureRowSpecialOffer(
-                                icon: "heart.fill", /// FIX HERE
-                                title: "Plant Symbolism",
-                                subtitle: "Understand what each plant represents"
-                            )
-                            
-                            FeatureRowSpecialOffer(
-                                icon: "gift.fill",
-                                title: "Perfect Gift Guide", /// FIX HERE
-                                subtitle: "Know exactly who to gift each plant to"
-                            )
-                            
-                            FeatureRowSpecialOffer(
-                                icon: "bell.fill",
-                                title: "Smart Care Reminders", /// FIX HERE
-                                subtitle: "Never forget to water your plants again"
+                                icon: "map.fill",
+                                title: "Personal Bird Journal",
+                                subtitle: "Save where you spotted each bird"
                             )
                         }
                         .padding(.horizontal)
@@ -152,7 +140,7 @@ struct SpecialOfferView: View {
                                         return
                                     }
                                     
-                                    if let package = offerings?.offering(identifier: "Trial")?.availablePackages.first(where: { $0.identifier == "$rc_annual" }) {
+                                    if let package = offerings?.offering(identifier: "Sales")?.availablePackages.first(where: { $0.identifier == "$rc_annual" }) {
                                         Task {
                                             do {
                                                 try await Purchases.shared.purchase(package: package) { (transaction, customerInfo, error, userCancelled) in

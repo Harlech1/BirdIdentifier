@@ -138,8 +138,8 @@ struct CollectionView: View {
                             sunBounce.toggle()
                             showFavoritesOnly.toggle()
                         } label: {
-                            Image(systemName: showFavoritesOnly ? "sun.max.fill" : "sun.max")
-                                .foregroundStyle(.yellow)
+                            Image(systemName: showFavoritesOnly ? "bird.fill" : "bird")
+                                .foregroundStyle(.green)
                                 .symbolEffect(.bounce, value: sunBounce)
                         }
 

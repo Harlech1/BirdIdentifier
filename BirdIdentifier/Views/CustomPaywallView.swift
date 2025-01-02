@@ -22,17 +22,17 @@ struct CustomPaywallView: View {
                         .fontWeight(.bold)
                     
                     VStack(alignment: .leading, spacing: 12) {
-                        FeatureRow(icon: "camera.viewfinder",
-                                 title: "Instant Recognition", 
-                                 description: "Identify birds in under 2 seconds")
+                        FeatureRow(icon: "sparkles.rectangle.stack",
+                                 title: "AI Bird Scanner", 
+                                 description: "Identify any bird instantly")
                         
-                        FeatureRow(icon: "book.closed.fill", 
-                                 title: "Bird Encyclopedia", 
-                                 description: "Details of 1000+ bird species")
+                        FeatureRow(icon: "book.fill", 
+                                 title: "Bird Stories", 
+                                 description: "Learn about their habitats & behaviors")
                         
                         FeatureRow(icon: "map.fill", 
-                                 title: "Location History", 
-                                 description: "Remember where you spot birds")
+                                 title: "Personal Bird Journal", 
+                                 description: "Save where you spotted each bird")
                     }
                 }
                 .padding(.vertical, 16)
@@ -57,14 +57,14 @@ struct CustomPaywallView: View {
                             currentOffering = newValue ? "Trial" : "Premium"
                             loadPackages()
                         }
-                        .tint(.blue)
+                        .tint(.green)
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
                 .background(Color(.systemBackground))
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
-                        .stroke(isTrialEnabled ? Color.blue : Color(.systemGray5), lineWidth: isTrialEnabled ? 5 : 5)
+                        .stroke(isTrialEnabled ? Color.green : Color(.systemGray5), lineWidth: isTrialEnabled ? 5 : 5)
                 )
                 .cornerRadius(12)
                 .padding(.horizontal)
@@ -97,7 +97,7 @@ struct CustomPaywallView: View {
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(selectedPackage != nil ? Color.blue : Color.gray)
+                        .background(selectedPackage != nil ? Color.green : Color.gray)
                         .cornerRadius(12)
                 }
                 .disabled(selectedPackage == nil)
@@ -153,8 +153,8 @@ struct CustomPaywallView: View {
         .background(
             LinearGradient(
                 gradient: Gradient(colors: [
-                    Color.blue.opacity(0.1),
-                    Color.blue.opacity(0.05)
+                    Color.green.opacity(0.1),
+                    Color.green.opacity(0.05)
                 ]),
                 startPoint: .top,
                 endPoint: .bottom
@@ -249,7 +249,7 @@ struct PurchaseButton: View {
                     Spacer()
                     
                     Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                        .foregroundColor(isSelected ? .blue : .secondary)
+                        .foregroundColor(isSelected ? .green : .secondary)
                         .font(.title3)
                 }
                 .padding(.horizontal, 16)
@@ -257,7 +257,7 @@ struct PurchaseButton: View {
                 .background(Color(.systemBackground))
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
-                        .stroke(isSelected ? Color.blue : Color(.systemGray5), lineWidth: isSelected ? 5 : 5)
+                        .stroke(isSelected ? Color.green : Color(.systemGray5), lineWidth: isSelected ? 5 : 5)
                 )
                 .cornerRadius(12)
             }
@@ -307,7 +307,7 @@ struct FeatureRow: View {
         HStack(spacing: 12) {
             Image(systemName: icon)
                 .font(.title2)
-                .foregroundColor(.blue)
+                .foregroundColor(.green)
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)

@@ -159,7 +159,7 @@ struct BirdDetailView: View {
                     }
                 }
 
-                if let nativeRegion = bird.nativeRegion {
+                if let nativeRegion = bird.nativeRegion, !nativeRegion.isEmpty {
                     HStack {
                         Label {
                             Text("Native Region")
@@ -176,7 +176,81 @@ struct BirdDetailView: View {
                 }
             }
 
-            if let story = bird.story, story.lowercased() != "none" {
+            if let colorPatterns = bird.colorPatterns, !colorPatterns.isEmpty {
+                Section(header: HStack {
+                    Image(systemName: "paintpalette.fill")
+                        .symbolRenderingMode(.hierarchical)
+                    Text("Color Patterns")
+                }) {
+                    Text(colorPatterns)
+                        .padding(4)
+                        .blur(radius: premiumManager.isPremium ? 0 : 5)
+                        .onTapGesture {
+                            if !premiumManager.isPremium {
+                                showPaywall = true
+                            }
+                        }
+                }
+            }
+
+            if let size = bird.size, !size.isEmpty {
+                Section(header: HStack {
+                    Image(systemName: "ruler.fill")
+                        .symbolRenderingMode(.hierarchical)
+                    Text("Size")
+                }) {
+                    Text(size)
+                        .padding(4)
+                    
+                }
+            }
+
+            if let distinctiveFeatures = bird.distinctiveFeatures, !distinctiveFeatures.isEmpty {
+                Section(header: HStack {
+                    Image(systemName: "sparkles.rectangle.stack.fill")
+                        .symbolRenderingMode(.hierarchical)
+                    Text("Distinctive Features")
+                }) {
+                    Text(distinctiveFeatures)
+                        .padding(4)
+                        .blur(radius: premiumManager.isPremium ? 0 : 5)
+                        .onTapGesture {
+                            if !premiumManager.isPremium {
+                                showPaywall = true
+                            }
+                        }
+                }
+            }
+
+            if let behavior = bird.behavior, !behavior.isEmpty {
+                Section(header: HStack {
+                    Image(systemName: "figure.walk")
+                        .symbolRenderingMode(.hierarchical)
+                    Text("Behavior")
+                }) {
+                    Text(behavior)
+                        .padding(4)
+                        .blur(radius: premiumManager.isPremium ? 0 : 5)
+                        .onTapGesture {
+                            if !premiumManager.isPremium {
+                                showPaywall = true
+                            }
+                        }
+                }
+            }
+
+            if let conservationStatus = bird.conservationStatus, !conservationStatus.isEmpty {
+                Section(header: HStack {
+                    Image(systemName: "leaf.fill")
+                        .symbolRenderingMode(.hierarchical)
+                    Text("Conservation Status")
+                }) {
+                    Text(conservationStatus)
+                        .padding(4)
+                }
+            }
+
+            if let story = bird.story, !story.isEmpty && story.lowercased() != "none" {
                 Section(header: HStack {
                     Image(systemName: "book.pages")
                         .symbolRenderingMode(.hierarchical)
@@ -192,7 +266,7 @@ struct BirdDetailView: View {
                         }
                 }
             }
-            
+
             if let date = bird.dateAdded {
                 Section("Added") {
                     HStack {

@@ -17,13 +17,6 @@ struct BirdIdentifierApp: App {
 
     init() {
         TPackage.configure(withAPIKey: "appl_VPaGiXzlKHXmvZUClhWCvSAWYGT", entitlementIdentifier: "Premium")
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, error in
-            if granted {
-                print("Notification permission granted")
-            } else if let error = error {
-                print("Error requesting notification permission: \(error)")
-            }
-        }
         UIPageControl.appearance().currentPageIndicatorTintColor = .systemGreen
         UIPageControl.appearance().pageIndicatorTintColor = .systemGreen.withAlphaComponent(0.2)
     }
